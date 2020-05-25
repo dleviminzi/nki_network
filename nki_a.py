@@ -10,26 +10,30 @@ gpickle_list = os.listdir('./gpickle_data')
 csv = open("o.csv", "w")
 csv.write('density, avg_clst, avg_deg, r2\n')
 
+# this value can be specified to cut off edges based on their weights
+# this indicates what percent and up you want
+thresh = 90
+
 for gp in gpickle_list:
-    G = dMRI2nx('./gpickle_data/{}'.format(gp))
+    G = dMRI2nx('./gpickle_data/{}'.format(gp), thresh)
     subject = gp[4:17]
     # compute density and avg clustering of nodes
     density = nx.density(G)
-    avg_clustering = nx.average_clustering(G, weight='weight')
+    avg_clustering = nx.average_clustering(G)
     #print('smlwrld: {}\n'.format(nx.sigma(G)))
 
     # graphing topological hierarchy (Negative correlation btwn degree
     # and clustering coefficient)
-    clst_nodes = nx.clustering(G, weight='weight')
-    deg_nodes = G.degree(weight='weight')
+    clst_nodes = nx.clustering(G)
+    deg_nodes = G.degree()
 
     cn_values = []
     for value in clst_nodes.values():
         cn_values.append(value)
 
     dg_values = []
-    for i in range(len(deg_nodes)):
-        dg_values.append(deg_nodes[i+1])
+    for i in deg_nodes:
+        dg_values.append(i[1])
 
     avg_deg = sum(dg_values)/len(dg_values)
 
@@ -43,7 +47,7 @@ for gp in gpickle_list:
 
     # generating output plot
     plt.clf()
-    plt.ylim(0, .12)
+    plt.ylim(0.25, 1.10)
     plt.scatter(dg_values, cn_values)
     plt.plot(np.unique(dg_values), best_fit(np.unique(dg_values)))
     plt.xlabel("node degree")

@@ -8,7 +8,7 @@ import os
 gpickle_list = os.listdir('./gpickle_data')
 
 csv = open("o.csv", "w")
-csv.write('density, avg_clst, avg_deg, r2\n')
+csv.write('session_id,session_number,density, avg_clst, avg_deg, r2\n')
 
 # this value can be specified to cut off edges based on their weights
 # this indicates what percent and up you want
@@ -36,13 +36,15 @@ for gp in gpickle_list:
         dg_values.append(i[1])
 
     avg_deg = sum(dg_values)/len(dg_values)
-
+    #Code to extract subject id and session number
+    subject_id = gp.split("_")[0]
+    session_number = gp.split("ses-")[1].split("_")[0]
     # creating est fit line
     best_fit = np.poly1d(np.polyfit(dg_values, cn_values, 1))
     r2 = r2_score(cn_values, best_fit(dg_values))
 
     # saving to csv
-    csv.write('{},{},{},{}\n'.format(density, avg_clustering, avg_deg, r2))
+    csv.write('{},{},{},{},{}\n'.format(subject_id,session_number,density, avg_clustering, avg_deg, r2))
 
 
     # generating output plot

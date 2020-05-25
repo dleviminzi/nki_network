@@ -12,7 +12,6 @@ csv.write('session_id,session_number,density, avg_clst, avg_deg, r2\n')
 
 for gp in gpickle_list:
     G = dMRI2nx('./gpickle_data/{}'.format(gp))
-    print(gp)
     subject = gp[4:17]
     # compute density and avg clustering of nodes
     density = nx.density(G)

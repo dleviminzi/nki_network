@@ -1,12 +1,10 @@
 import networkx as nx
 import math
 
-def dMRI2nx(gpickle_path, threshold):
+def dMRI2nx(gpickle_path, threshold, directed=False):
     unpickled = nx.read_gpickle(gpickle_path)
-    G = nx.Graph()
     weights = []
     pot_edges = []
-    print(type(G))
 
     for key in unpickled.edge.keys():
         weighted = unpickled.edge[key]
@@ -16,11 +14,17 @@ def dMRI2nx(gpickle_path, threshold):
             pot_edges.append((key, target, weight))
 
     weights = sorted(weights)
-    
+    if directed:
+        G = nx.DiGraph()
+    else:
+        G = nx.Graph()
+    print(type(G))
     t = threshold/100
 
     for edge in pot_edges:
         if (edge[2] >= math.floor(t*len(weights))):
             G.add_edge(edge[0], edge[1])
+            if directed:
+                G.add_edge(edge[1], edge[0])
 
     return G

@@ -5,7 +5,7 @@ from matplotlib import pyplot as plt
 from sklearn.metrics import r2_score
 import os
 
-def analyzeNKI(directed=True, thresholds=[10,50,90],gpickle_dir='./gpickle_data/'):
+def analyzeNKI(directed=False, deg_dist=False, thresholds=[10,50,90],gpickle_dir='./gpickle_data/'):
     ''' ANALYSIS OF NKI BRAIN ATLAS DATA
 
     UNDIRECTED INTERPRETATION COMPUTATIONS
@@ -63,7 +63,7 @@ def analyzeNKI(directed=True, thresholds=[10,50,90],gpickle_dir='./gpickle_data/
                     load_cent, strong_concomp))
 
 
-            if directed: # there are a few more computations worth checking
+            elif directed: # there are a few more computations worth checking
                 weak_concomp = nx.number_weakly_connected_components(G)
 
                 csv.write('{},{},{},{:.4f},{:.4f},{},{:.4f},{},{},{}\n'.format(

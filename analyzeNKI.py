@@ -96,7 +96,10 @@ def baseCalcs(G):
     best_fit = np.poly1d(np.polyfit(dg_values, cn_values, 1))
     r2 = r2_score(cn_values, best_fit(dg_values))
 
-    diameter = nx.diameter(G)
+    try:
+        diameter = nx.diameter(G)
+    except:
+        diameter = 0
 
     load_cent = nx.load_centrality(G)
     load_cent = sorted(load_cent.items())
@@ -106,5 +109,4 @@ def baseCalcs(G):
     return density, avg_clustering, avg_deg, r2, diameter, load_cent
 
 
-analyzeNKI(True)
-analyzeNKI(False)
+analyzeNKI(False, thresholds=[10,25,50,75,90])

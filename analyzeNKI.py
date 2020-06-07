@@ -48,6 +48,7 @@ def analyzeNKI(directed=False, thresholds=[10,50,90],gpickle_dir='./gpickle_data
                         directed=directed)
 
             subject_id = gp.split("_")[0]                        # extract id
+            subject_id = subject_id.split("-")[1]
             session_number = gp.split("ses-")[1].split("_")[0]   # extract sess
 
             density, avg_clustering, avg_deg, r2, diameter, load_cent = baseCalcs(G)

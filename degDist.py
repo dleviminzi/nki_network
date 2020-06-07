@@ -5,7 +5,7 @@ import collections
 import os
 import csv
 
-def degDist(gpickle_dir='./gpickle_data/', thresholds=[10,50,90]):
+def degDist(thresholds, gpickle_dir='./gpickle_data/'):
     GPICKLES = os.listdir(gpickle_dir)
 
     for threshold in thresholds:
@@ -17,6 +17,7 @@ def degDist(gpickle_dir='./gpickle_data/', thresholds=[10,50,90]):
             deg, cnt = zip(*degreeCount.items())
 
             subject_id = gp.split("_")[0]
+            subject_id = subject_id.split("-")[1]
             session_number = gp.split("ses-")[1].split("_")[0]
 
             fig, ax = plt.subplots(figsize=(20, 10))

@@ -3,6 +3,7 @@ from dMRI2nx import dMRI2nx
 import networkx as nx
 import collections
 import os
+import csv
 
 def degDist(gpickle_dir='./gpickle_data/', thresholds=[10,50,90]):
     GPICKLES = os.listdir(gpickle_dir)
@@ -52,4 +53,3 @@ def degDist(gpickle_dir='./gpickle_data/', thresholds=[10,50,90]):
         os.system('paste {} > ./degreeDist/dD{}.csv'.format(paste_str, threshold))
 
 
-degDist()

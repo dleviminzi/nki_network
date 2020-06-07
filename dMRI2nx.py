@@ -22,7 +22,7 @@ def dMRI2nx(gpickle_path, threshold, directed=False):
     t = threshold/100
 
     for edge in pot_edges:
-        if (edge[2] >= math.floor(t*len(weights))):
+        if (edge[2] >= weights[math.floor(t*len(weights))]):
             G.add_edge(edge[0], edge[1])
             if directed:
                 G.add_edge(edge[1], edge[0])

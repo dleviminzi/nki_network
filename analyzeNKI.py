@@ -5,7 +5,7 @@ from matplotlib import pyplot as plt
 from sklearn.metrics import r2_score
 import os
 
-def analyzeNKI(directed=False, thresholds=[10,50,90],gpickle_dir='./gpickle_data/'):
+def analyzeNKI(thresholds, directed=False, gpickle_dir='./gpickle_data/'):
     ''' ANALYSIS OF NKI BRAIN ATLAS DATA
 
     UNDIRECTED INTERPRETATION COMPUTATIONS
@@ -109,5 +109,3 @@ def baseCalcs(G):
 
     return density, avg_clustering, avg_deg, r2, diameter, load_cent
 
-
-analyzeNKI(False, thresholds=[10,25,50,75,90])

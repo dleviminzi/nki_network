@@ -42,10 +42,10 @@ def degDist(G, subject_id, session_number,threshold):
     P_k = P_k[::-1]
 
     best_fit = np.poly1d(np.polyfit(np.log10(deg), np.log10(P_k), 1))
-    r2 = r2_score(np.log(P_k), best_fit(np.log(deg)))
+    r2 = r2_score(np.log10(P_k), best_fit(np.log10(deg)))
 
     fig, ax = plt.subplots(figsize=(20, 10))
-    plt.plot(np.log10(deg),np.log10(P_k),'yo',np.log(deg),best_fit(np.log(deg)),'--k')
+    plt.plot(np.log10(deg),np.log10(P_k),'yo',np.log10(deg),best_fit(np.log10(deg)),'--k')
     plt.title('{}-{}-{} Powerlaw Adherence r2: {}'.format(subject_id,session_number,threshold,r2))
     plt.xlim(0,2)
     plt.ylabel("P_k")

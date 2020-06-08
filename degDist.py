@@ -1,9 +1,12 @@
-import matplotlib.pyplot as plt
-from dMRI2nx import dMRI2nx
 import networkx as nx
+from sklearn.metrics import r2_score
 import collections
 import os
 import csv
+from dMRI2nx import dMRI2nx
+import matplotlib.pyplot as plt
+import numpy as np
+from scipy.stats import powerlaw
 
 def degDist(thresholds, gpickle_dir='./gpickle_data/'):
     GPICKLES = os.listdir(gpickle_dir)
@@ -20,6 +23,38 @@ def degDist(thresholds, gpickle_dir='./gpickle_data/'):
             subject_id = subject_id.split("-")[1]
             session_number = gp.split("ses-")[1].split("_")[0]
 
+            total_cnt = 0
+            for i in cnt:
+                total_cnt += i
+
+            ct = []
+            for i in cnt:
+                ct.append(i/total_cnt)
+
+            P_k = []
+            for i in range(len(ct)):
+                x = ct[i]
+                j = i
+                while j < len(cnt):
+                    x += ct[j]
+                    j += 1
+                print(x)
+                P_k.append(x)
+
+            P_k = P_k[::-1]
+
+            best_fit = np.poly1d(np.polyfit(np.log10(deg), np.log10(P_k), 1))
+            r2 = r2_score(np.log(P_k), best_fit(np.log(deg)))
+
+            fig, ax = plt.subplots(figsize=(20, 10))
+            plt.plot(np.log10(deg),np.log10(P_k),'yo',np.log(deg),best_fit(np.log(deg)),'--k')
+            plt.title('{}-{}-{} Powerlaw Adherence r2: {}'.format(subject_id,session_number,threshold,r2))
+            plt.xlim(0,2)
+            plt.ylabel("P_k")
+            plt.xlabel("Degree")
+            plt.savefig('./degreeDist/{}-{}-{}.png'.format(subject_id, session_number, threshold))
+            plt.close()
+            '''
             fig, ax = plt.subplots(figsize=(20, 10))
             plt.bar(deg, cnt, width=0.80, color='b')
             plt.title("Degree Histogram - {} {} {}".format(subject_id, session_number, threshold))
@@ -41,6 +76,7 @@ def degDist(thresholds, gpickle_dir='./gpickle_data/'):
             for i in range(8):         # very lazy fix
                 csv.write('0,0,\n')
 
+
             csv.close()
 
 
@@ -52,5 +88,5 @@ def degDist(thresholds, gpickle_dir='./gpickle_data/'):
             paste_str += './degreeDist/raw{}/'.format(threshold) + file + ' '
 
         os.system('paste {} > ./degreeDist/dD{}.csv'.format(paste_str, threshold))
-
+    '''
 

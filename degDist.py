@@ -7,54 +7,56 @@ from dMRI2nx import dMRI2nx
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.stats import powerlaw
-
+'''
 def degDist(thresholds, gpickle_dir='./gpickle_data/'):
     GPICKLES = os.listdir(gpickle_dir)
 
     for threshold in thresholds:
         for gp in GPICKLES:
             G = dMRI2nx('./gpickle_data/{}'.format(gp), threshold=threshold,
-                         directed=False)
-            degree_sequence = sorted([d for n, d in G.degree()], reverse=True)
-            degreeCount = collections.Counter(degree_sequence)
-            deg, cnt = zip(*degreeCount.items())
+                         directed=False)'''
 
-            subject_id = gp.split("_")[0]
-            subject_id = subject_id.split("-")[1]
-            session_number = gp.split("ses-")[1].split("_")[0]
 
-            total_cnt = 0
-            for i in cnt:
-                total_cnt += i
+def degDist(G, subject_id, session_number,threshold):
+    degree_sequence = sorted([d for n, d in G.degree()], reverse=True)
+    degreeCount = collections.Counter(degree_sequence)
+    deg, cnt = zip(*degreeCount.items())
 
-            ct = []
-            for i in cnt:
-                ct.append(i/total_cnt)
+    total_cnt = 0
+    for i in cnt:
+        total_cnt += i
 
-            P_k = []
-            for i in range(len(ct)):
-                x = ct[i]
-                j = i
-                while j < len(cnt):
-                    x += ct[j]
-                    j += 1
-                print(x)
-                P_k.append(x)
+    ct = []
+    for i in cnt:
+        ct.append(i/total_cnt)
 
-            P_k = P_k[::-1]
+    P_k = []
+    for i in range(len(ct)):
+        x = ct[i]
+        j = i
+        while j < len(cnt):
+            x += ct[j]
+            j += 1
+        P_k.append(x)
 
-            best_fit = np.poly1d(np.polyfit(np.log10(deg), np.log10(P_k), 1))
-            r2 = r2_score(np.log(P_k), best_fit(np.log(deg)))
+    P_k = P_k[::-1]
 
-            fig, ax = plt.subplots(figsize=(20, 10))
-            plt.plot(np.log10(deg),np.log10(P_k),'yo',np.log(deg),best_fit(np.log(deg)),'--k')
-            plt.title('{}-{}-{} Powerlaw Adherence r2: {}'.format(subject_id,session_number,threshold,r2))
-            plt.xlim(0,2)
-            plt.ylabel("P_k")
-            plt.xlabel("Degree")
-            plt.savefig('./degreeDist/{}-{}-{}.png'.format(subject_id, session_number, threshold))
-            plt.close()
-            '''
+    best_fit = np.poly1d(np.polyfit(np.log10(deg), np.log10(P_k), 1))
+    r2 = r2_score(np.log(P_k), best_fit(np.log(deg)))
+
+    fig, ax = plt.subplots(figsize=(20, 10))
+    plt.plot(np.log10(deg),np.log10(P_k),'yo',np.log(deg),best_fit(np.log(deg)),'--k')
+    plt.title('{}-{}-{} Powerlaw Adherence r2: {}'.format(subject_id,session_number,threshold,r2))
+    plt.xlim(0,2)
+    plt.ylabel("P_k")
+    plt.xlabel("Degree")
+    plt.savefig('./degreeDist/{}-{}-{}.png'.format(subject_id, session_number, threshold))
+    plt.close()
+
+    return r2
+
+
+    ''' OLD - USE FOR GETTING PLAIN DEGREE DISTRIBUTION
             fig, ax = plt.subplots(figsize=(20, 10))
             plt.bar(deg, cnt, width=0.80, color='b')
             plt.title("Degree Histogram - {} {} {}".format(subject_id, session_number, threshold))

@@ -3,6 +3,7 @@ import networkx as nx
 import numpy as np
 from matplotlib import pyplot as plt
 from sklearn.metrics import r2_score
+from degDist import degDist
 import os
 
 def analyzeNKI(thresholds, directed=False, gpickle_dir='./gpickle_data/'):
@@ -35,8 +36,8 @@ def analyzeNKI(thresholds, directed=False, gpickle_dir='./gpickle_data/'):
 
     if not directed:
         csv.write('session_id,session_number,threshold,density, avg_clst, \
-                  avg_deg, r2, diameter, num_clq, max_clq_size, max_load_cent, \
-                  str connected comps \n')
+                  avg_deg, topo r2, diameter, num_clq, max_clq_size, max_load_cent, \
+                  str connected comps, degdist r2 \n')
     else:
         csv.write('session_id,session_number,threshold,density, avg_clst, \
                   avg_deg, r2, diameter, max_load_cent, weak_concomp,\n')
@@ -57,11 +58,12 @@ def analyzeNKI(thresholds, directed=False, gpickle_dir='./gpickle_data/'):
                 num_clq = len(nx.number_of_cliques(G))
                 max_clq_size = nx.graph_clique_number(G)
                 strong_concomp = nx.number_connected_components(G)
+                ddr2 = degDist(G, subject_id, session_number, threshold)
 
-                csv.write('{},{},{},{:.4f},{:.4f},{},{:.4f},{},{},{},{},{}\n'.format(
+                csv.write('{},{},{},{:.4f},{:.4f},{},{:.4f},{},{},{},{},{},{}\n'.format(
                     subject_id, session_number, threshold, density,
                     avg_clustering, avg_deg, r2, diameter, num_clq, max_clq_size,
-                    load_cent, strong_concomp))
+                    load_cent, strong_concomp, ddr2))
 
 
             elif directed: # there are a few more computations worth checking
